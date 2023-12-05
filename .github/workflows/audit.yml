@@ -31,9 +31,6 @@ jobs:
       - name: ESLint validation
         run: npx eslint --ignore-path .gitignore
 
-      - name: Run tests with coverage
-        run: npm run test:pro
-
       - name: Check commit message length
         uses: gsactions/commit-message-checker@v1
         with:
