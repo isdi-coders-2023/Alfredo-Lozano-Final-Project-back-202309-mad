@@ -19,7 +19,7 @@
     "prepare": "husky install",
     "sass": "sass scss:css -w --no-source-map",
     "start": "tsc -w node dist/index.js",
-    "start:dev": "cross-env PORT=1969 DEBUG=W7E* nodemon dist/index.js"
+    "start:dev": "cross-env PORT=1969 DEBUG=W9Final* nodemon dist/index.js"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.7",
