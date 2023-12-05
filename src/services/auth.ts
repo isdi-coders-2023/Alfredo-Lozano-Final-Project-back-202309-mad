@@ -5,7 +5,7 @@ import { HttpError } from '../types/http.error.js';
 import createDebug from 'debug';
 import { TokenPayload } from '../types/tokenPayload.js';
 
-const debug = createDebug('EPV:auth');
+const debug = createDebug('W9Final:auth');
 debug('Imported');
 
 export abstract class Auth {

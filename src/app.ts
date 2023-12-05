@@ -3,12 +3,11 @@ import cors from 'cors';
 import morgan from 'morgan';
 import { beerRouter } from './router/beer.router.js';
 import createDebug from 'debug';
-
-const debug = createDebug('W7E:app');
 import { handleError } from './middleware/error.middleware.js';
 import { pubsRouter } from './router/pubs.router.js';
 import { usersRouter } from './router/user.router.js';
 
+const debug = createDebug('W9Final:app');
 export const app = express();
 debug('Starting');
 

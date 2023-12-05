@@ -36,7 +36,7 @@ describe('Given the Media File class', () => {
         format: 'jpg',
       });
     });
-    test('should handle cloudinary API errors gracefully when image upload fails', async () => {
+    test('should handle cloudinary API errors when image upload fails', async () => {
       const imagePath = 'valid/image/path.jpg';
       const error = new Error('Upload failed');
       cloudinary.uploader.upload = jest.fn().mockRejectedValue(error);
