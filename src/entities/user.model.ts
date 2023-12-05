@@ -1,4 +1,4 @@
-import { Beer } from './beer.model';
+import { Beer } from './beer.model.js';
 
 export type UserLogin = {
   password: string;
