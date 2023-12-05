@@ -22,7 +22,7 @@ describe('Given the Media File class', () => {
       const result = await mediaFiles.uploadImage(imagePath);
       expect(cloudinary.uploader.upload).toHaveBeenCalledWith(imagePath, {
         // eslint-disable-next-line camelcase
-        use_filername: true,
+        use_filename: true,
         // eslint-disable-next-line camelcase
         unique_filename: false,
         overwrite: true,
