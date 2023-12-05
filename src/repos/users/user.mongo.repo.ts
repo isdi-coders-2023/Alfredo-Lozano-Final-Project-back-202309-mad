@@ -84,36 +84,45 @@ export class UsersMongoRepo implements UserRepository<User> {
   }
 
   async addBeer(beerId: Beer['id'], userId: User['id']): Promise<User> {
-    const user = await UserModel.findById(userId).exec();
-
-    if (!user) {
-      throw new HttpError(404, 'Not Found', 'User not found');
-    }
-
-    if (user.probada.includes(beerId as unknown as Beer)) {
-      return user;
-    }
-
-    const updatedUser = await UserModel.findByIdAndUpdate(
-      userId,
-      { $push: { probada: beerId } },
-      {
-        new: true,
+    try {
+      const user = await UserModel.findById(userId).exec();
+      if (!user) {
+        throw new HttpError(404, 'Not Found', 'User not found');
       }
-    ).exec();
 
-    if (!updatedUser) {
-      throw new HttpError(404, 'Not Found', 'Update not possible');
+      if (user.probada.includes(beerId as unknown as Beer)) {
+        throw new HttpError(
+          400,
+          'Bad Request',
+          "Beer already added to user's list"
+        );
+      }
+
+      const updatedUser = await UserModel.findByIdAndUpdate(
+        userId,
+        { $push: { probada: beerId } },
+        { new: true }
+      ).exec();
+
+      if (!updatedUser) {
+        throw new HttpError(
+          500,
+          'Internal Server Error',
+          'Update not possible'
+        );
+      }
+
+      return updatedUser;
+    } catch (error) {
+      console.error(error);
+      throw new HttpError(500, 'Internal Server Error', 'Something went wrong');
     }
-
-    return updatedUser;
   }
 
   async removeBeer(
     beerIdToRemove: Beer['id'],
     userId: User['id']
   ): Promise<User> {
-    // eslint-disable-next-line no-useless-catch
     try {
       const user = await UserModel.findById(userId).exec();
 
@@ -137,7 +146,8 @@ export class UsersMongoRepo implements UserRepository<User> {
 
       return updatedUser;
     } catch (error) {
-      throw error;
+      console.error(error);
+      throw new HttpError(500, 'Internal Server Error', 'Something went wrong');
     }
   }
 }
