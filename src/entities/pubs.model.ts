@@ -6,5 +6,4 @@ export type Pubs = {
   direction: string;
   owner: string;
   Beers: Beer[];
-  visitado: Boolean;
 };
