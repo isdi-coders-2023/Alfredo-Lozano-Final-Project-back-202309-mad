@@ -1,10 +1,10 @@
 import createDebug from 'debug';
-import { UserRepository } from './users.repo';
-import { User, UserLogin } from '../../entities/user.model';
-import { UserModel } from './users.mongo.model';
-import { HttpError } from '../../types/http.error';
-import { Auth } from '../../services/auth';
-import { Beer } from '../../entities/beer.model';
+import { UserRepository } from './users.repo.js';
+import { User, UserLogin } from '../../entities/user.model.js';
+import { UserModel } from './users.mongo.model.js';
+import { HttpError } from '../../types/http.error.js';
+import { Auth } from '../../services/auth.js';
+import { Beer } from '../../entities/beer.model.js';
 
 /* istanbul ignore next */
 const debug = createDebug('W9Final:Users:mongo:repo');
@@ -84,45 +84,36 @@ export class UsersMongoRepo implements UserRepository<User> {
   }
 
   async addBeer(beerId: Beer['id'], userId: User['id']): Promise<User> {
-    try {
-      const user = await UserModel.findById(userId).exec();
-      if (!user) {
-        throw new HttpError(404, 'Not Found', 'User not found');
-      }
+    const user = await UserModel.findById(userId).exec();
 
-      if (user.probada.includes(beerId as unknown as Beer)) {
-        throw new HttpError(
-          400,
-          'Bad Request',
-          "Beer already added to user's list"
-        );
-      }
-
-      const updatedUser = await UserModel.findByIdAndUpdate(
-        userId,
-        { $push: { probada: beerId } },
-        { new: true }
-      ).exec();
-
-      if (!updatedUser) {
-        throw new HttpError(
-          500,
-          'Internal Server Error',
-          'Update not possible'
-        );
-      }
-
-      return updatedUser;
-    } catch (error) {
-      console.error(error);
-      throw new HttpError(500, 'Internal Server Error', 'Something went wrong');
+    if (!user) {
+      throw new HttpError(404, 'Not Found', 'User not found');
     }
+
+    if (user.probada.includes(beerId as unknown as Beer)) {
+      return user;
+    }
+
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      userId,
+      { $push: { probada: beerId } },
+      {
+        new: true,
+      }
+    ).exec();
+
+    if (!updatedUser) {
+      throw new HttpError(404, 'Not Found', 'Update not possible');
+    }
+
+    return updatedUser;
   }
 
   async removeBeer(
     beerIdToRemove: Beer['id'],
     userId: User['id']
   ): Promise<User> {
+    // eslint-disable-next-line no-useless-catch
     try {
       const user = await UserModel.findById(userId).exec();
 
@@ -146,8 +137,7 @@ export class UsersMongoRepo implements UserRepository<User> {
 
       return updatedUser;
     } catch (error) {
-      console.error(error);
-      throw new HttpError(500, 'Internal Server Error', 'Something went wrong');
+      throw error;
     }
   }
 }

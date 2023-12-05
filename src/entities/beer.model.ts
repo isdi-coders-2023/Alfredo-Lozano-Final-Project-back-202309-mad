@@ -1,5 +1,5 @@
-import { ImgData } from '../types/imgFiles';
-import { User } from './user.model';
+import { ImgData } from '../types/imgFiles.js';
+import { User } from './user.model.js';
 
 export type Beer = {
   id: string;
