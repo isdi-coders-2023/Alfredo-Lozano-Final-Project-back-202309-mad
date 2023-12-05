@@ -4,6 +4,7 @@ import createDebug from 'debug';
 import { ImgData } from '../types/imgFiles.js';
 import { HttpError } from '../types/http.error.js';
 
+/* istanbul ignore next */
 const debug = createDebug('W9Final:media.files');
 
 export class MediaFiles {

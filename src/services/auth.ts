@@ -5,6 +5,7 @@ import { HttpError } from '../types/http.error.js';
 import createDebug from 'debug';
 import { TokenPayload } from '../types/tokenPayload.js';
 
+/* istanbul ignore next */
 const debug = createDebug('W9Final:auth');
 debug('Imported');
 
