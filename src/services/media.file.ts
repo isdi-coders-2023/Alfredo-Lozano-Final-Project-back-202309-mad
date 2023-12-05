@@ -24,7 +24,7 @@ export class MediaFiles {
   async uploadImage(imagePath: string) {
     try {
       const uploadApiRespones = await cloudinary.uploader.upload(imagePath, {
-        use_filername: true,
+        use_filename: true,
         unique_filename: false,
         overwrite: true,
       });
