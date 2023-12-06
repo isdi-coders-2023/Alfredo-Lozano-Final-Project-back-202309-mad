@@ -3,6 +3,6 @@
 export default {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  testPathIgnorePatterns: ['dist'],
+  testPathIgnorePatterns: ['dist', 'src/app/app.ts', 'src/index.ts'],
   resolver: 'jest-ts-webcompat-resolver',
 };
