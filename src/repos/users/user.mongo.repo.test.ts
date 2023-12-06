@@ -265,6 +265,7 @@ describe('Given UserMongoRepo class', () => {
     test("Then, when data isn't found with the delete() method", async () => {
       await expect(repo.delete('')).rejects.toThrow(HttpError);
     });
+
     test('should throw a 404 error if the user is not found in the database', async () => {
       const beerId = 'beerId';
       const userId = 'userId';

@@ -22,8 +22,10 @@ export class UsersMongoRepo implements UserRepository<User> {
   }
 
   async getAll(): Promise<User[]> {
-    const data = await UserModel.find().exec();
-    return data;
+    const result = await UserModel.find().exec();
+    if (!result)
+      throw new HttpError(404, 'Not Found', 'getAll method not possible');
+    return result;
   }
 
   async getById(id: string): Promise<User> {
@@ -43,16 +45,9 @@ export class UsersMongoRepo implements UserRepository<User> {
     value: any;
   }): Promise<User[]> {
     const result = await UserModel.find({ [key]: value })
-      .populate(
-        'probadas',
-        {
-          beer: 0,
-        },
-        'visitado',
-        {
-          pubs: 0,
-        }
-      )
+      .populate('probadas', {
+        beer: 0,
+      })
       .exec();
 
     return result;
