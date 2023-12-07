@@ -5,4 +5,11 @@ export default {
   testEnvironment: 'node',
   testPathIgnorePatterns: ['dist', 'src/app/app.ts', 'src/index.ts'],
   resolver: 'jest-ts-webcompat-resolver',
+  coveragePathIgnorePatterns: [
+    'src/app.ts',
+    'src/index.ts',
+    'src/routers/user.routes.ts',
+    'src/routers/pub.routes.ts',
+    'src/routers/beer.routes.ts',
+  ],
 };
