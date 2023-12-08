@@ -195,7 +195,7 @@ describe('Given UserMongoRepo class', () => {
       expect(UserModel.findByIdAndUpdate).not.toHaveBeenCalled();
       expect(result).toEqual(user);
     });
-    test("should remove a beer from a user's visited pubs list when the pub exists in the list", async () => {
+    test("should remove a beer from a user's probadas list when the beer exists in the list", async () => {
       const beerIdToRemove = 'beerId';
       const userId = 'userId';
       const user = {

@@ -7,4 +7,5 @@ export interface PubsRepository<X extends { id: unknown }> {
   update(_id: X['id'], _updatedItem: Partial<X>): Promise<X>;
   delete(_id: X['id']): Promise<void>;
   addBeer(_BeerId: X['id'], _PubId: X['id']): Promise<X>;
+  removeBeer(_Pubid: X['id'], _beerIdToRemove: X['id']): Promise<X>;
 }
