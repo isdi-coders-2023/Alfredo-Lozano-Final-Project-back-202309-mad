@@ -335,25 +335,23 @@ describe('Given UserMongoRepo class', () => {
       expect(UserModel.findByIdAndUpdate).not.toHaveBeenCalled();
       expect(result).toEqual(user);
     });
-    // Test('should not update the user object if the beer ID is not in the list', async () => {
-    //   const beerIdToadd = 'beerId';
-    //   const userId = 'userId';
-    //   const user = {
-    //     id: userId,
-    //     name: 'John',
-    //     surname: 'Doe',
-    //     age: 25,
-    //     userName: 'johndoe',
-    //     probada: [],
-    //   };
-    //   UserModel.findById = jest
-    //     .fn()
-    //     .mockReturnValue({ exec: jest.fn().mockResolvedValue(user) });
+    test('should not update the user object if the beer ID is not in the list', async () => {
+      const beerIdToadd = 'beerId';
+      const userId = 'userId';
+      const user = {
+        id: userId,
+        name: 'John',
+        surname: 'Doe',
+        age: 25,
+        userName: 'johndoe',
+        probada: [],
+      };
+      UserModel.findById = jest
+        .fn()
+        .mockReturnValue({ exec: jest.fn().mockResolvedValue(user) });
 
-    //   const result = await repo.addBeer(beerIdToadd, userId);
-    //   expect(UserModel.findById).toHaveBeenCalledWith(userId);
-    //   expect(UserModel.findByIdAndUpdate).not.toHaveBeenCalled();
-    //   expect(result).toEqual(user);
-    // });
+      const error = new HttpError(404, 'Not found', 'Update not possible');
+      await expect(repo.addBeer(beerIdToadd, userId)).rejects.toThrow(error);
+    });
   });
 });
