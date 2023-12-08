@@ -227,6 +227,9 @@ describe('Given UserMongoRepo class', () => {
   describe('when there is an error', () => {
     beforeEach(() => {
       repo = new UsersMongoRepo();
+      UserModel.find = jest
+        .fn()
+        .mockReturnValue({ exec: jest.fn().mockResolvedValue(null) });
       UserModel.findById = jest
         .fn()
         .mockReturnValue({ exec: jest.fn().mockResolvedValue(null) });
@@ -244,6 +247,10 @@ describe('Given UserMongoRepo class', () => {
     test('should throw a HttpError with status code 404 when given an empty string as user id', async () => {
       await expect(repo.getById('')).rejects.toThrow(HttpError);
       expect(UserModel.findById).toHaveBeenCalledWith('');
+    });
+    test('should throw an HttpError with status 404 and message', async () => {
+      await expect(repo.getAll()).rejects.toThrow(HttpError);
+      await expect(repo.getAll()).rejects.toThrow('getAll method not possible');
     });
     test('should throw an HttpError with status 404 when an invalid id is passed', async () => {
       const repo = new UsersMongoRepo();
@@ -328,25 +335,23 @@ describe('Given UserMongoRepo class', () => {
       expect(UserModel.findByIdAndUpdate).not.toHaveBeenCalled();
       expect(result).toEqual(user);
     });
-    // Test('should not update the user object if the beer ID is not in the list', async () => {
-    //   const beerIdToadd = 'beerId';
-    //   const userId = 'userId';
-    //   const user = {
-    //     id: userId,
-    //     name: 'John',
-    //     surname: 'Doe',
-    //     age: 25,
-    //     userName: 'johndoe',
-    //     probada: [],
-    //   };
-    //   UserModel.findById = jest
-    //     .fn()
-    //     .mockReturnValue({ exec: jest.fn().mockResolvedValue(user) });
+    test('should not update the user object if the beer ID is not in the list', async () => {
+      const beerIdToadd = 'beerId';
+      const userId = 'userId';
+      const user = {
+        id: userId,
+        name: 'John',
+        surname: 'Doe',
+        age: 25,
+        userName: 'johndoe',
+        probada: [],
+      };
+      UserModel.findById = jest
+        .fn()
+        .mockReturnValue({ exec: jest.fn().mockResolvedValue(user) });
 
-    //   const result = await repo.addBeer(beerIdToadd, userId);
-    //   expect(UserModel.findById).toHaveBeenCalledWith(userId);
-    //   expect(UserModel.findByIdAndUpdate).not.toHaveBeenCalled();
-    //   expect(result).toEqual(user);
-    // });
+      const error = new HttpError(404, 'Not found', 'Update not possible');
+      await expect(repo.addBeer(beerIdToadd, userId)).rejects.toThrow(error);
+    });
   });
 });
