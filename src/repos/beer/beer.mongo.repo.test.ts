@@ -132,6 +132,10 @@ describe('Given UserMongoRepo class', () => {
         populate: jest.fn().mockReturnValue(exec),
         exec,
       });
+      BeerModel.findByIdAndUpdate = jest.fn().mockReturnValue({
+        populate: jest.fn().mockReturnValue({ exec }),
+        exec,
+      });
       Auth.compare = jest.fn().mockResolvedValue(true);
     });
     test('should throw an HttpError with status 404 and message', async () => {
@@ -144,12 +148,21 @@ describe('Given UserMongoRepo class', () => {
     });
     test('should throw an HttpError with status 404 when an invalid id is passed', async () => {
       const id = 'invalidId';
-      await expect(repo.getById(id)).rejects.toThrow(HttpError);
-      expect(BeerModel.findById).toHaveBeenCalledWith(id);
+      const updatedItem = {
+        name: 'Updated Beer',
+      };
+      const error = new HttpError(404, 'Not found', 'Update not possible');
+      await expect(repo.update(id, updatedItem)).rejects.toThrow(error);
     });
     test('should throw an HttpError with status 404 when an invalid id is passed', async () => {
-      const id = 'valid id';
-      await expect(repo.delete(id)).rejects.toThrow(HttpError);
+      const id = '';
+      const exec = jest.fn().mockResolvedValueOnce(null);
+      const queryMock = {
+        populate: jest.fn().mockReturnThis(),
+        exec,
+      };
+      BeerModel.findByIdAndDelete = jest.fn().mockReturnValueOnce(queryMock);
+      await expect(repo.delete('')).rejects.toThrow(HttpError);
       expect(BeerModel.findByIdAndDelete).toHaveBeenCalledWith(id);
     });
   });

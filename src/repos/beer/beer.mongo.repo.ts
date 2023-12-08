@@ -66,14 +66,13 @@ export class BeerMongoRepo implements Repository<Beer> {
       .populate('User', { name: 1 })
       .exec();
     if (!result) throw new HttpError(404, 'Not Found', 'Update not possible');
+
     return result;
   }
 
   async delete(id: string): Promise<void> {
     const result = await BeerModel.findByIdAndDelete(id)
-      .populate('author', {
-        beer: 0,
-      })
+      .populate('author', { beer: 0 })
       .exec();
     if (!result) {
       throw new HttpError(404, 'Not Found', 'Delete not possible');
