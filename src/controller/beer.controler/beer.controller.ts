@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 import createDebug from 'debug';
-import { Controller } from '../controller';
-import { Beer } from '../../entities/beer.model';
-import { BeerMongoRepo } from '../../repos/beer/beer.mongo.repo';
-import { HttpError } from '../../types/http.error';
+import { Controller } from '../controller.js';
+import { Beer } from '../../entities/beer.model.js';
+import { BeerMongoRepo } from '../../repos/beer/beer.mongo.repo.js';
+import { HttpError } from '../../types/http.error.js';
 
 const debug = createDebug('W9Final:beers:controller');
 
