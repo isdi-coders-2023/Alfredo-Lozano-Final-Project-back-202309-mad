@@ -5,5 +5,5 @@ export type Pubs = {
   name: string;
   direction: string;
   owner: string;
-  Beers: Beer[];
+  beers: Beer[];
 };
