@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import createDebug from 'debug';
 import { handleError } from './middleware/error.middleware.js';
 import { usersRouter } from './routers/user.routes.js';
+import { beersRouter } from './routers/beer.routes.js';
 
 const debug = createDebug('W9Final:app');
 export const app = express();
@@ -16,5 +17,6 @@ app.use(express.json());
 app.use(express.static('public'));
 
 app.use('/user', usersRouter);
+app.use('/beer', beersRouter);
 
 app.use(handleError);

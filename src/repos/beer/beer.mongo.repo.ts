@@ -1,9 +1,9 @@
 import createDebug from 'debug';
-import { Repository } from './beer.repo';
-import { Beer } from '../../entities/beer.model';
-import { BeerModel } from './beer.mongo.model';
-import { HttpError } from '../../types/http.error';
-import { UsersMongoRepo } from '../users/user.mongo.repo';
+import { Repository } from './beer.repo.js';
+import { Beer } from '../../entities/beer.model.js';
+import { BeerModel } from './beer.mongo.model.js';
+import { HttpError } from '../../types/http.error.js';
+import { UsersMongoRepo } from '../users/user.mongo.repo.js';
 
 /* istanbul ignore next */
 const debug = createDebug('W9Final:Beer:mongo:repo');
