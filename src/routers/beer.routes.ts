@@ -15,6 +15,6 @@ const fileInterceptor = new FileInterceptor();
 
 beersRouter.post(
   '/add',
-  fileInterceptor.singleFileStore('file').bind(fileInterceptor),
+  fileInterceptor.singleFileStore('beerImg').bind(fileInterceptor),
   controller.create.bind(controller)
 );

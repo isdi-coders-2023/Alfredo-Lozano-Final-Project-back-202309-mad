@@ -1,4 +1,5 @@
 import { ImgData } from '../types/imgFiles.js';
+import { Pubs } from './pubs.model.js';
 import { User } from './user.model.js';
 
 export type Beer = {
@@ -10,4 +11,5 @@ export type Beer = {
   beerImg: ImgData;
   probada?: boolean;
   author: User;
+  pubs: Pubs;
 };

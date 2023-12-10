@@ -3,7 +3,7 @@ import multer from 'multer';
 import crypto from 'crypto';
 
 export class FileInterceptor {
-  singleFileStore(fileName = 'file', fileSize = 8_000_000) {
+  singleFileStore(fileName = 'beerImg', fileSize = 8_000_000) {
     const options: multer.Options = {
       // Temp dest: 'uploads',
       storage: multer.diskStorage({

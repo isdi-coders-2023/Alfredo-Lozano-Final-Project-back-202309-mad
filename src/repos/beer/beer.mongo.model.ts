@@ -25,7 +25,7 @@ export const beerSchema = new Schema<Beer>({
   author: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    required: true,
+    required: false,
   },
   beerImg: {
     publicId: String,
@@ -38,6 +38,12 @@ export const beerSchema = new Schema<Beer>({
     required: false,
     unique: false,
   },
+  pubs: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Pub',
+    },
+  ],
 });
 
 export const BeerModel = model('Beers', beerSchema, 'beers');

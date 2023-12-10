@@ -10,7 +10,7 @@ const beers = {
   name: 'Updated Beer',
   author: 'validUserID',
 } as unknown as Beer;
-describe('Given UserMongoRepo class', () => {
+describe('Given BeerMongoRepo class', () => {
   let repo: BeerMongoRepo;
   const exec = jest.fn().mockResolvedValue(beers);
 
