@@ -1,8 +1,8 @@
 import createDebug from 'debug';
 import { NextFunction, Request, Response } from 'express';
-import { Controller } from '../controller';
-import { Pubs } from '../../entities/pubs.model';
-import { PubsMongoRepo } from '../../repos/pubs/pubs.mongo.repo';
+import { Controller } from '../controller.js';
+import { Pubs } from '../../entities/pubs.model.js';
+import { PubsMongoRepo } from '../../repos/pubs/pubs.mongo.repo.js';
 
 const debug = createDebug('W9Final:pubs:controller');
 

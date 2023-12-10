@@ -1,8 +1,8 @@
-import { PubsController } from '../controller/pubs.controler/pubs.controller';
-import { PubsMongoRepo } from '../repos/pubs/pubs.mongo.repo';
+import { PubsController } from '../controller/pubs.controler/pubs.controller.js';
+import { PubsMongoRepo } from '../repos/pubs/pubs.mongo.repo.js';
 import { Router as createRouter } from 'express';
 import createDebug from 'debug';
-import { Interceptor } from '../middleware/auth.interceptor';
+import { Interceptor } from '../middleware/auth.interceptor.js';
 
 const debug = createDebug('W9Final:pubs:router');
 

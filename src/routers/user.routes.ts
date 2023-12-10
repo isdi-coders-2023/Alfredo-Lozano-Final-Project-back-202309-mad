@@ -2,7 +2,7 @@ import { Router as createRouter } from 'express';
 import createDebug from 'debug';
 import { UsersMongoRepo } from '../repos/users/user.mongo.repo.js';
 import { UsersController } from '../controller/user.controllers/user.controller.js';
-import { Interceptor } from '../middleware/auth.interceptor';
+import { Interceptor } from '../middleware/auth.interceptor.js';
 
 const debug = createDebug('W9Final:user:router');
 
