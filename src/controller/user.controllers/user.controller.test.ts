@@ -68,11 +68,11 @@ describe('Given UsersController class', () => {
       await controller.delete(mockRequest, mockResponse, mockNext);
       expect(mockResponse.json).toHaveBeenCalledWith({});
     });
-    // Test('Then addBeer should ...', async () => {
-    //   await controller.addBeer(mockRequest, mockResponse, mockNext);
-    //   expect(mockResponse.json).toHaveBeenCalledWith({});
-    // });
-    // test('Then addPub should ...', async () => {
+    test('Then addBeer should ...', async () => {
+      await controller.addBeer(mockRequest, mockResponse, mockNext);
+      expect(mockResponse.json).toHaveBeenCalledWith({});
+    });
+    // Test('Then addPub should ...', async () => {
     //   await controller.addPub(mockRequest, mockResponse, mockNext);
     //   expect(mockResponse.json).toHaveBeenCalledWith({});
     // });
@@ -80,10 +80,10 @@ describe('Given UsersController class', () => {
     //   await controller.removePub(mockRequest, mockResponse, mockNext);
     //   expect(mockResponse.json).toHaveBeenCalledWith({});
     // });
-    // test('then deleteBeer should...', async () => {
-    //   await controller.removeBeer(mockRequest, mockResponse, mockNext);
-    //   expect(mockResponse.json).toHaveBeenCalledWith({});
-    // });
+    test('then deleteBeer should...', async () => {
+      await controller.removeBeer(mockRequest, mockResponse, mockNext);
+      expect(mockResponse.json).toHaveBeenCalledWith({});
+    });
   });
 
   describe('When we instantiate it WITH errors', () => {
@@ -135,21 +135,14 @@ describe('Given UsersController class', () => {
       await controller.delete(mockRequest, mockResponse, mockNext);
       expect(mockNext).toHaveBeenLastCalledWith(mockError);
     });
-    // Test('then addPub should..', async () => {
-    //   await controller.addPub(mockRequest, mockResponse, mockNext);
-    //   expect(mockNext).toHaveBeenLastCalledWith(mockError);
-    // });
-    // test('then addBeer should..', async () => {
-    //   await controller.addBeer(mockRequest, mockResponse, mockNext);
-    //   expect(mockNext).toHaveBeenLastCalledWith(mockError);
-    // });
-    // test('then removeBeer should..', async () => {
-    //   await controller.removeBeer(mockRequest, mockResponse, mockNext);
-    //   expect(mockNext).toHaveBeenLastCalledWith(mockError);
-    // });
-    // test('then removePub should..', async () => {
-    //   await controller.removePub(mockRequest, mockResponse, mockNext);
-    //   expect(mockNext).toHaveBeenLastCalledWith(mockError);
-    // });
+
+    test('then addBeer should..', async () => {
+      await controller.addBeer(mockRequest, mockResponse, mockNext);
+      expect(mockNext).toHaveBeenLastCalledWith(mockError);
+    });
+    test('then removeBeer should..', async () => {
+      await controller.removeBeer(mockRequest, mockResponse, mockNext);
+      expect(mockNext).toHaveBeenLastCalledWith(mockError);
+    });
   });
 });
