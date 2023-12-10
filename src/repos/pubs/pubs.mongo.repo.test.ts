@@ -1,5 +1,6 @@
 import { Pubs } from '../../entities/pubs.model';
 import { Auth } from '../../services/auth';
+import { HttpError } from '../../types/http.error';
 import { PubsModel } from './pubs.mongo.model';
 import { PubsMongoRepo } from './pubs.mongo.repo';
 
@@ -207,6 +208,123 @@ describe('Given PubsMongoRepo class', () => {
         { new: true }
       );
       expect(result).toEqual(pubs);
+    });
+  });
+  describe('when there is an error', () => {
+    const mockExec = jest.fn().mockResolvedValueOnce(null);
+    beforeEach(() => {
+      repo = new PubsMongoRepo();
+      PubsModel.findById = jest.fn().mockResolvedValue(null);
+      PubsModel.findByIdAndUpdate = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(null),
+      });
+      PubsModel.findByIdAndDelete = jest.fn().mockReturnValueOnce({
+        exec: mockExec,
+      });
+    });
+    test('should throw a HttpError with status code 404 when given an empty string as user id', async () => {
+      await expect(repo.getById('')).rejects.toThrow(HttpError);
+      expect(PubsModel.findById).toHaveBeenCalledWith('');
+    });
+    test('should throw an error when given an invalid id', async () => {
+      const id = 'invalidId';
+      const updatedItem: Partial<Pubs> = {
+        name: 'New Pub Name',
+      };
+      await expect(repo.update(id, updatedItem)).rejects.toThrow(HttpError);
+      expect(PubsModel.findByIdAndUpdate).toHaveBeenCalledWith(
+        id,
+        updatedItem,
+        {
+          new: true,
+        }
+      );
+    });
+    test('should throw a 404 HttpError when deleting a non-existing pub', async () => {
+      const id = 'nonExistingId';
+      PubsModel.findByIdAndDelete = jest.fn().mockResolvedValue(null);
+      await expect(repo.delete(id)).rejects.toThrow(HttpError);
+      expect(PubsModel.findByIdAndDelete).toHaveBeenCalledWith(id);
+    });
+    test('should throw an error if the pub is not found', async () => {
+      const beerId = 'beerId';
+      const pubId = 'pubId';
+      const mockPub = null;
+      PubsModel.findById = jest
+        .fn()
+        .mockReturnValue({ exec: jest.fn().mockResolvedValue(mockPub) });
+      await expect(repo.addBeer(beerId, pubId)).rejects.toThrow(HttpError);
+      expect(PubsModel.findById).toHaveBeenCalledWith(pubId);
+    });
+    test('should throw a HttpError with status 404 when the update fails', async () => {
+      const beerId = 'beerId';
+      const pubsId = 'pubId';
+      const mockPub = {
+        id: pubsId,
+        name: 'John',
+        surname: 'Doe',
+        age: 25,
+        userName: 'johndoe',
+        beers: [],
+      };
+      PubsModel.findById = jest
+        .fn()
+        .mockReturnValue({ exec: jest.fn().mockResolvedValue(mockPub) });
+      PubsModel.findByIdAndUpdate = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(null),
+      });
+      await expect(repo.addBeer(beerId, pubsId)).rejects.toThrow(HttpError);
+    });
+    test('should throw an error if the beerIdToRemove parameter is null or undefined', async () => {
+      const beerIdToRemove = '';
+      const pubId = 'pubId';
+      PubsModel.findById = jest
+        .fn()
+        .mockReturnValue({ exec: jest.fn().mockResolvedValue(null) });
+      await expect(repo.removeBeer(beerIdToRemove, pubId)).rejects.toThrow(
+        HttpError
+      );
+    });
+    test('should not update the user object if the beer ID is not in the list', async () => {
+      const beerIdToRemove = 'beerId';
+      const pubsId = 'userId';
+      const mockPub = {
+        id: pubsId,
+        name: 'John',
+        surname: 'Doe',
+        age: 25,
+        userName: 'johndoe',
+        beers: [],
+      };
+      PubsModel.findById = jest
+        .fn()
+        .mockReturnValue({ exec: jest.fn().mockResolvedValue(mockPub) });
+
+      const result = await repo.removeBeer(beerIdToRemove, pubsId);
+      expect(PubsModel.findById).toHaveBeenCalledWith(pubsId);
+      expect(PubsModel.findByIdAndUpdate).not.toHaveBeenCalled();
+      expect(result).toEqual(mockPub);
+    });
+    test('should throw a HttpError with status 404 when the update fails', async () => {
+      const beerIdToRemove = 'beerId';
+      const pubsId = 'pubId';
+      const mockPub = {
+        id: pubsId,
+        name: 'John',
+        surname: 'Doe',
+        age: 25,
+        userName: 'johndoe',
+        beers: [beerIdToRemove],
+      };
+      PubsModel.findById = jest
+        .fn()
+        .mockReturnValue({ exec: jest.fn().mockResolvedValue(mockPub) });
+      PubsModel.findByIdAndUpdate = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(null),
+      });
+      await expect(repo.removeBeer(beerIdToRemove, pubsId)).rejects.toThrow(
+        HttpError
+      );
     });
   });
 });
