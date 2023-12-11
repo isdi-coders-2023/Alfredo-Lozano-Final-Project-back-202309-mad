@@ -32,7 +32,7 @@ describe('Given the Media File class', () => {
         publicId: 'public_id',
         size: 1000,
         height: 500,
-        With: 500,
+        width: 500,
         format: 'jpg',
       });
     });

@@ -14,10 +14,11 @@ const controller = new UsersController(repo);
 const interceptor = new Interceptor();
 
 usersRouter.post('/register', controller.create.bind(controller));
-usersRouter.post(
-  '/login',
+usersRouter.post('/login', controller.login.bind(controller));
+usersRouter.patch(
+  '/addBeer/:id',
   interceptor.authorization.bind(interceptor),
-  controller.login.bind(controller)
+  controller.addBeer.bind(controller)
 );
-usersRouter.patch('/addBeer/:id', controller.addBeer.bind(controller));
+usersRouter.get('/id', controller.getById.bind(controller));
 usersRouter.patch('/delBeer/:id', controller.removeBeer.bind(controller));

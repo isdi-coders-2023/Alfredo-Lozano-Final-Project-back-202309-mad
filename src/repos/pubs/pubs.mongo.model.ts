@@ -2,11 +2,6 @@ import { Schema, model } from 'mongoose';
 import { Pubs } from '../../entities/pubs.model';
 
 export const pubSchema = new Schema<Pubs>({
-  id: {
-    type: String,
-    required: true,
-    unique: true,
-  },
   name: {
     type: String,
     required: true,
