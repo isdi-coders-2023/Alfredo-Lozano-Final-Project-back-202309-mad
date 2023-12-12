@@ -32,7 +32,7 @@ describe('Given the Media File class', () => {
         publicId: 'public_id',
         size: 1000,
         height: 500,
-        With: 500,
+        width: 500,
         format: 'jpg',
       });
     });
@@ -51,7 +51,7 @@ describe('Given the Media File class', () => {
       if (errorResult) {
         expect(errorResult).toBeInstanceOf(HttpError);
         expect(errorResult.status).toBe(406);
-        expect(errorResult.statusMessage).toBe('Not aceptable');
+        expect(errorResult.statusMessage).toBe('Not Acceptable');
         expect(errorResult.message).toBe('Upload failed');
       }
     });

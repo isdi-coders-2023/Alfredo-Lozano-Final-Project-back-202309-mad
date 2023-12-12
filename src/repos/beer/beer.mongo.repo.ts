@@ -50,12 +50,7 @@ export class BeerMongoRepo implements Repository<Beer> {
   }
 
   async create(newItem: Omit<Beer, 'id'>): Promise<Beer> {
-    const userID = newItem.author.id;
-    await this.userRepo.getById(userID);
-    const result: Beer = await BeerModel.create({
-      ...newItem,
-      autor: userID,
-    });
+    const result: Beer = await BeerModel.create(newItem);
     return result;
   }
 

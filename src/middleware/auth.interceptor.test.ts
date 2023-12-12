@@ -14,7 +14,7 @@ jest.mock('../services/auth', () => ({
 describe('Given the middleware', () => {
   describe('When it is instantiated', () => {
     const req = {
-      get: jest.fn().mockReturnValueOnce('bearer token'),
+      get: jest.fn().mockReturnValueOnce('Bearer token'),
       body: {},
     } as unknown as Request;
     const res = {} as unknown as Response;
