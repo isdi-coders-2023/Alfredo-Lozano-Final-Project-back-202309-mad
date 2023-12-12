@@ -27,22 +27,25 @@ export class MediaFiles {
 
   async uploadImage(imagePath: string) {
     try {
-      const uploadApiRespones = await cloudinary.uploader.upload(imagePath, {
+      const uploadApiResponse = await cloudinary.uploader.upload(imagePath, {
         use_filename: true,
         unique_filename: false,
         overwrite: true,
       });
+
       const imgData: ImgData = {
-        url: uploadApiRespones.url,
-        publicId: uploadApiRespones.public_id,
-        size: uploadApiRespones.bytes,
-        height: uploadApiRespones.height,
-        width: uploadApiRespones.width,
-        format: uploadApiRespones.format,
+        url: uploadApiResponse.url,
+        publicId: uploadApiResponse.public_id,
+        size: uploadApiResponse.bytes,
+        height: uploadApiResponse.height,
+        width: uploadApiResponse.width,
+        format: uploadApiResponse.format,
       };
+
       return imgData;
-    } catch (error) {
-      throw new HttpError(406, 'Not aceptable', (error as Error).message);
+    } catch (err) {
+      const error = err as Error;
+      throw new HttpError(406, 'Not Acceptable', error.message);
     }
   }
 }

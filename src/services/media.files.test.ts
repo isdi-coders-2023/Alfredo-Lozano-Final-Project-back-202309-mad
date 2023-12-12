@@ -51,7 +51,7 @@ describe('Given the Media File class', () => {
       if (errorResult) {
         expect(errorResult).toBeInstanceOf(HttpError);
         expect(errorResult.status).toBe(406);
-        expect(errorResult.statusMessage).toBe('Not aceptable');
+        expect(errorResult.statusMessage).toBe('Not Acceptable');
         expect(errorResult.message).toBe('Upload failed');
       }
     });

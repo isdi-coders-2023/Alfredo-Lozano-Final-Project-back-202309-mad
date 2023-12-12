@@ -1,82 +1,123 @@
 import { BeerMongoRepo } from '../../repos/beer/beer.mongo.repo';
+import { UsersMongoRepo } from '../../repos/users/user.mongo.repo';
+import { HttpError } from '../../types/http.error';
 import { BeersControler } from './beer.controller';
 import { Request, Response, NextFunction } from 'express';
 
 describe('Given FilmsController class', () => {
-  let controller: BeersControler;
-  let mockRequest: Request;
-  let mockResponse: Response;
-  let mockNext: NextFunction;
-  let mockRepo: jest.Mocked<BeerMongoRepo>;
-
-  beforeAll(() => {
-    mockRequest = {
-      body: {},
-      params: {},
-      query: { key: 'value' },
-    } as unknown as Request;
-    mockResponse = {
-      json: jest.fn(),
-      status: jest.fn(),
-    } as unknown as Response;
-    mockNext = jest.fn();
-  });
-
-  beforeEach(() => {
-    mockRepo = {
-      getById: jest.fn().mockResolvedValue({}),
-      create: jest.fn().mockResolvedValue({}),
-      update: jest.fn().mockResolvedValue({}),
-      login: jest.fn().mockResolvedValue({}),
-    } as unknown as jest.Mocked<BeerMongoRepo>;
-
-    controller = new BeersControler(mockRepo);
-  });
-
   describe('When we instantiate it without errors', () => {
-    test('Then register (create) should create a new user with valid input data and image file', async () => {
-      const mockRequest = {
-        file: {
-          path: 'valid/path/to/image.jpg',
-        },
-        body: {},
+    test('should create a beer with valid input data and image file', async () => {
+      const mockRequest: Request = {
+        params: { id: 'validUserID' },
+        file: { path: 'validPath' },
+        body: { name: 'Beer Name' },
       } as unknown as Request;
+      const mockResponse: Response = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+        statusMessage: '',
+      } as unknown as Response;
+      const mockNext: NextFunction = jest.fn();
+      const mockAuthor = { id: 'validUserID', name: 'Author Name' };
+      const mockImgData = { url: 'validImageUrl' };
+      const mockResult = {
+        id: 'validBeerID',
+        name: 'Beer Name',
+        description: 'Beer Description',
+        author: mockAuthor,
+        beerImg: mockImgData,
+      };
 
-      const mockNext = jest.fn();
+      const mockUserRepo = {
+        getById: jest.fn().mockResolvedValue(mockAuthor),
+      } as unknown as UsersMongoRepo;
+
+      const mockCloudinaryService = {
+        uploadImage: jest.fn().mockResolvedValue(mockImgData),
+      };
       const mockRepo = {
-        create: jest.fn(),
+        create: jest.fn().mockResolvedValue(mockResult),
       } as unknown as BeerMongoRepo;
 
       const controller = new BeersControler(mockRepo);
-      const mockImageData = { url: 'https://example.com/image.jpg' };
-      const mockCloudinaryService = {
-        uploadImage: jest.fn().mockResolvedValue(mockImageData),
-      };
-
+      controller.userRepo = mockUserRepo;
       controller.cloudinaryService = mockCloudinaryService;
 
-      await controller.create(mockRequest, mockResponse, mockNext);
+      await controller.createBeer(mockRequest, mockResponse, mockNext);
 
+      expect(mockUserRepo.getById).toHaveBeenCalledWith('validUserID');
+      expect(mockRequest.body.author).toEqual(mockAuthor);
       expect(mockCloudinaryService.uploadImage).toHaveBeenCalledWith(
-        mockRequest.file?.path
+        'validPath'
       );
-      expect(mockRequest.body.beerImg).toBe(mockImageData);
+      expect(mockRequest.body.beerImg).toEqual(mockImgData);
+      expect(mockRepo.create).toHaveBeenCalledWith({
+        name: 'Beer Name',
+        author: mockAuthor,
+        beerImg: mockImgData,
+      });
+      expect(mockResponse.status).toHaveBeenCalledWith(201);
+      expect(mockResponse.statusMessage).toEqual('Created');
+      expect(mockResponse.json).toHaveBeenCalledWith(mockResult);
     });
   });
-
   describe('When we instantiate it with errors', () => {
-    let mockError: Error;
-    beforeEach(() => {
-      mockError = new Error('Invalid multer file');
-      const mockRepo = {
-        login: jest.fn().mockRejectedValue(mockError),
-        create: jest.fn().mockRejectedValue(mockError),
-      } as unknown as BeerMongoRepo;
+    test('should throw an error with status 404 when the user with the given ID does not exist', async () => {
+      const mockRequest: Request = {
+        params: { id: 'invalidUserID' },
+        file: { path: 'validPath' },
+        body: { name: 'Beer Name' },
+      } as unknown as Request;
+      const mockResponse: Response = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+        statusMessage: '',
+      } as unknown as Response;
+      const mockNext: NextFunction = jest.fn();
+      const mockError = new HttpError(404, 'Not Found', 'User not found');
 
-      controller = new BeersControler(mockRepo);
+      const mockUserRepo = {
+        getById: jest.fn().mockRejectedValue(mockError),
+      } as unknown as UsersMongoRepo;
+
+      const controller = new BeersControler({} as BeerMongoRepo);
+      controller.userRepo = mockUserRepo;
+
+      await controller.createBeer(mockRequest, mockResponse, mockNext);
+
+      expect(mockUserRepo.getById).toHaveBeenCalledWith('invalidUserID');
+      expect(mockNext).toHaveBeenCalledWith(mockError);
     });
-    test('Then register (create) should throw an error', async () => {
-      await controller.create(mockRequest, mockResponse, mockNext);
+    test('should throw an error with status 406 when the file is invalid', async () => {
+      const mockRequest: Request = {
+        params: { id: 'validUserID' },
+        file: undefined,
+        body: { name: 'Beer Name' },
+      } as unknown as Request;
+      const mockResponse: Response = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+        statusMessage: '',
+      } as unknown as Response;
+      const mockNext: NextFunction = jest.fn();
+      const mockError = new HttpError(
+        406,
+        'Not Acceptable',
+        'Invalid multer file'
+      );
+
+      const mockUserRepo = {
+        getById: jest
+          .fn()
+          .mockResolvedValue({ id: 'validUserID', name: 'Author Name' }),
+      } as unknown as UsersMongoRepo;
+
+      const controller = new BeersControler({} as BeerMongoRepo);
+      controller.userRepo = mockUserRepo;
+
+      await controller.createBeer(mockRequest, mockResponse, mockNext);
+
+      expect(mockUserRepo.getById).toHaveBeenCalledWith('validUserID');
       expect(mockNext).toHaveBeenCalledWith(mockError);
     });
   });

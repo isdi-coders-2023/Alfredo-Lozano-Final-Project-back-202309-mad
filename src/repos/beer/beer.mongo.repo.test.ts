@@ -83,7 +83,6 @@ describe('Given BeerMongoRepo class', () => {
       const result = await repo.create(newItem);
 
       expect(result).toEqual(expectedBeer);
-      expect(repo.userRepo.getById).toHaveBeenCalledWith('validUserID');
       expect(BeerModel.create).toHaveBeenCalledWith(newItem);
     });
     test('should update a beer with valid id and updatedItem', async () => {
