@@ -2,7 +2,7 @@ import { PubsController } from '../controller/pubs.controler/pubs.controller.js'
 import { PubsMongoRepo } from '../repos/pubs/pubs.mongo.repo.js';
 import { Router as createRouter } from 'express';
 import createDebug from 'debug';
-import { Interceptor } from '../middleware/auth.interceptor.js';
+// Import { Interceptor } from '../middleware/auth.interceptor.js';
 
 const debug = createDebug('W9Final:pubs:router');
 
@@ -11,19 +11,14 @@ debug('Starting');
 
 const repo = new PubsMongoRepo();
 const controller = new PubsController(repo);
-// eslint-disable-next-line no-unused-vars
-const interceptor = new Interceptor();
+
+// Const interceptor = new Interceptor();
 
 pubsRouter.post('/add', controller.create.bind(controller));
 pubsRouter.patch('/addBeer/:id', controller.addBeer.bind(controller));
 pubsRouter.patch('/delBeer/:id', controller.removeBeer.bind(controller));
-
+pubsRouter.get('/', controller.getAll.bind(controller));
 // PubsRouter.get(
-//   '/',
-//   interceptor.authorization.bind(interceptor),
-//   controller.getAll.bind(controller)
-// );
-// pubsRouter.get(
 //   '/:id',
 //   interceptor.authorization.bind(interceptor),
 //   controller.getById.bind(controller)
