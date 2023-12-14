@@ -79,22 +79,10 @@ export class UsersMongoRepo implements UserRepository<User> {
   }
 
   async addBeer(beerId: Beer['id'], userId: User['id']): Promise<User> {
-    const user = await UserModel.findById(userId).exec();
-
-    if (!user) {
-      throw new HttpError(404, 'Not Found', 'User not found');
-    }
-
-    if (user.probada.includes(beerId as unknown as Beer)) {
-      return user;
-    }
-
     const updatedUser = await UserModel.findByIdAndUpdate(
       userId,
       { $push: { probada: beerId } },
-      {
-        new: true,
-      }
+      { new: true }
     ).exec();
 
     if (!updatedUser) {

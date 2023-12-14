@@ -32,11 +32,6 @@ export const beerSchema = new Schema<Beer>({
     format: String,
     url: String,
   },
-  probada: {
-    type: Boolean,
-    required: false,
-    unique: false,
-  },
 });
 
 export const BeerModel = model('Beers', beerSchema, 'beers');
