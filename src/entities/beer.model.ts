@@ -9,6 +9,5 @@ export type Beer = {
   style: string;
   alcohol: string;
   beerImg: ImgData;
-  probada?: boolean;
   author: User;
 };

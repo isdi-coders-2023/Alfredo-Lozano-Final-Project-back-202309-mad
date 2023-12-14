@@ -13,6 +13,16 @@ const controller = new UsersController(repo);
 
 usersRouter.post('/register', controller.create.bind(controller));
 usersRouter.post('/login', controller.login.bind(controller));
+<<<<<<< HEAD
 usersRouter.get('/:id', controller.getById.bind(controller));
 usersRouter.patch('/addBeer/:id', controller.addBeer.bind(controller));
+=======
+usersRouter.patch(
+  '/addBeer/:id',
+  interceptor.authorization.bind(interceptor),
+  controller.addBeer.bind(controller)
+);
+usersRouter.patch('/delBeer/:id', controller.removeBeer.bind(controller));
+usersRouter.get('/id', controller.getById.bind(controller));
+>>>>>>> ef75a71d6122f24ea18af1b5231767a43350af0d
 usersRouter.patch('/delBeer/:id', controller.removeBeer.bind(controller));

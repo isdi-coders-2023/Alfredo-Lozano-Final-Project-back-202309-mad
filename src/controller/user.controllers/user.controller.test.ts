@@ -12,7 +12,7 @@ describe('Given UsersController class', () => {
       body: {
         password: 'password123',
       },
-      params: {},
+      params: { id: 'beer1' },
       query: { key: 'value' },
     } as unknown as Request;
     mockResponse = {
@@ -29,8 +29,7 @@ describe('Given UsersController class', () => {
         search: jest.fn().mockResolvedValue([{}]),
         create: jest.fn().mockResolvedValue({}),
         update: jest.fn().mockResolvedValue({}),
-        addBeer: jest.fn().mockResolvedValue({}),
-        addPub: jest.fn().mockResolvedValue({}),
+        addBeer: jest.fn().mockResolvedValue({ id: '1', probada: ['beer1'] }),
         delete: jest.fn().mockResolvedValue(undefined),
         removePub: jest.fn().mockResolvedValue({}),
         removeBeer: jest.fn().mockResolvedValue({}),
@@ -63,23 +62,10 @@ describe('Given UsersController class', () => {
       await controller.update(mockRequest, mockResponse, mockNext);
       expect(mockResponse.json).toHaveBeenCalledWith({});
     });
-
     test('Then delete should ...', async () => {
       await controller.delete(mockRequest, mockResponse, mockNext);
       expect(mockResponse.json).toHaveBeenCalledWith({});
     });
-    test('Then addBeer should ...', async () => {
-      await controller.addBeer(mockRequest, mockResponse, mockNext);
-      expect(mockResponse.json).toHaveBeenCalledWith({});
-    });
-    // Test('Then addPub should ...', async () => {
-    //   await controller.addPub(mockRequest, mockResponse, mockNext);
-    //   expect(mockResponse.json).toHaveBeenCalledWith({});
-    // });
-    // test('then deletePub should...', async () => {
-    //   await controller.removePub(mockRequest, mockResponse, mockNext);
-    //   expect(mockResponse.json).toHaveBeenCalledWith({});
-    // });
     test('then deleteBeer should...', async () => {
       await controller.removeBeer(mockRequest, mockResponse, mockNext);
       expect(mockResponse.json).toHaveBeenCalledWith({});
@@ -140,6 +126,7 @@ describe('Given UsersController class', () => {
       await controller.addBeer(mockRequest, mockResponse, mockNext);
       expect(mockNext).toHaveBeenLastCalledWith(mockError);
     });
+
     test('then removeBeer should..', async () => {
       await controller.removeBeer(mockRequest, mockResponse, mockNext);
       expect(mockNext).toHaveBeenLastCalledWith(mockError);
