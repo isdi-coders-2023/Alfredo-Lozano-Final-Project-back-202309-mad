@@ -5,6 +5,9 @@ import { UsersMongoRepo } from '../../repos/users/user.mongo.repo.js';
 import { LoginResponse } from '../../types/login.response.js';
 import { User } from '../../entities/user.model.js';
 import { Auth } from '../../services/auth.js';
+import { HttpError } from '../../types/http.error.js';
+
+import { Beer } from '../../entities/beer.model.js';
 
 const debug = createDebug('W9Final:users:controller');
 
@@ -37,8 +40,26 @@ export class UsersController extends Controller<User> {
 
   async addBeer(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await this.repo.addBeer(req.params.id, req.body);
-      res.json(result);
+      const user = await this.repo.getById(req.body.id);
+      const beer = req.params.id;
+      if (!user) {
+        throw new HttpError(404, 'Not Found', 'User not found');
+      }
+
+      if (user.probada.includes(beer as unknown as Beer)) {
+        throw new HttpError(
+          404,
+          'Beer Found',
+          'Update not possible, Beer already in you taste beer'
+        );
+      }
+
+      const updatedUser = await this.repo.addBeer(user.id, beer);
+      if (!updatedUser) {
+        throw new HttpError(404, 'Not Found', 'Update not possible');
+      }
+
+      res.json(updatedUser);
     } catch (error) {
       next(error);
     }

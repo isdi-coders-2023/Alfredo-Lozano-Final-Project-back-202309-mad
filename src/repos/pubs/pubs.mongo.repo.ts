@@ -66,16 +66,6 @@ export class PubsMongoRepo implements PubsRepository<Pubs> {
   }
 
   async addBeer(beerId: Beer['id'], pubId: Pubs['id']): Promise<Pubs> {
-    const pub = await PubsModel.findById(pubId).exec();
-
-    if (!pub) {
-      throw new HttpError(404, 'Not Found', 'Pub not found');
-    }
-
-    if (pub.beers.includes(beerId as unknown as Beer)) {
-      return pub;
-    }
-
     const updatedPub = await PubsModel.findByIdAndUpdate(
       pubId,
       { $push: { beers: beerId } },

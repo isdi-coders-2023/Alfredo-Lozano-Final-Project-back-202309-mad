@@ -31,8 +31,6 @@ describe('UsersController', () => {
       search: jest.fn().mockResolvedValue([{}]),
       create: jest.fn().mockResolvedValue({}),
       update: jest.fn().mockResolvedValue({}),
-      addFriend: jest.fn().mockResolvedValue({}),
-      addEnemy: jest.fn().mockResolvedValue({}),
       delete: jest.fn().mockResolvedValue(undefined),
       login: jest.fn().mockResolvedValue({}),
     } as unknown as jest.Mocked<UsersMongoRepo>;
@@ -81,6 +79,30 @@ describe('UsersController', () => {
         user: mockUser,
       });
     });
+    test('should return the updated user object after adding the beer', async () => {
+      const mockRequest = {
+        body: { id: 'userId' },
+        params: { id: 'beerId' },
+      } as unknown as Request;
+      const mockResponse = {
+        json: jest.fn(),
+      } as unknown as Response;
+      const mockNext = jest.fn();
+      const mockUser = { id: 'userId', probada: [] } as unknown as User;
+      const mockUpdatedUser = {
+        id: 'userId',
+        probada: ['beerId'],
+      } as unknown as User;
+      const mockRepo = {
+        getById: jest.fn().mockResolvedValue(mockUser),
+        addBeer: jest.fn().mockResolvedValue(mockUpdatedUser),
+      } as unknown as jest.Mocked<UsersMongoRepo>;
+      const controller = new UsersController(mockRepo);
+
+      await controller.addBeer(mockRequest, mockResponse, mockNext);
+
+      expect(mockResponse.json).toHaveBeenCalledWith(mockUpdatedUser);
+    });
   });
   describe('other methods', () => {
     test('should handle errors during login', async () => {
@@ -89,6 +111,27 @@ describe('UsersController', () => {
 
       await controller.login(mockRequest, mockResponse, mockNext);
 
+      expect(mockNext).toHaveBeenCalledWith(mockError);
+    });
+
+    test('should handle errors during addBeer', async () => {
+      const mockRequest = {
+        body: { id: 'userId' },
+        params: { id: 'beerId' },
+      } as unknown as Request;
+      const mockResponse = {
+        json: jest.fn(),
+      } as unknown as Response;
+      const mockNext = jest.fn();
+      const mockError = new Error('Mock error');
+      const mockRepo = {
+        getById: jest.fn().mockRejectedValue(mockError),
+      } as unknown as jest.Mocked<UsersMongoRepo>;
+      const controller = new UsersController(mockRepo);
+
+      await controller.addBeer(mockRequest, mockResponse, mockNext);
+
+      expect(mockRepo.getById).toHaveBeenCalledWith('userId');
       expect(mockNext).toHaveBeenCalledWith(mockError);
     });
   });
