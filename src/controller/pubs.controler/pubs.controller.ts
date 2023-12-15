@@ -16,7 +16,12 @@ export class PubsController extends Controller<Pubs> {
 
   async addBeer(req: Request, res: Response, next: NextFunction) {
     try {
-      const pubId = await this.repo.getById(req.body.id);
+      console.log(req.params);
+      const pubID = req.body;
+      console.log(pubID);
+      console.log(req.body.id);
+      const pubId = await this.repo.getById(pubID.id);
+      console.log(pubId);
       const beer = req.params.id;
       if (!pubId) {
         throw new HttpError(404, 'Not Found', 'Pub not found');
