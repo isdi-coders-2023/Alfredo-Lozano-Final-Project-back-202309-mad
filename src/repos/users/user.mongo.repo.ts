@@ -9,7 +9,7 @@ import { Beer } from '../../entities/beer.model.js';
 /* istanbul ignore next */
 const debug = createDebug('W9Final:Users:mongo:repo');
 
-export class UsersMongoRepo implements UserRepository<User> {
+export class UsersMongoRepo implements UserRepository<User, Beer> {
   constructor() {
     debug('Instantiated');
   }
@@ -22,18 +22,22 @@ export class UsersMongoRepo implements UserRepository<User> {
   }
 
   async getAll(): Promise<User[]> {
-    const result = await UserModel.find().exec();
+    const result = await UserModel.find().populate('probada').exec();
     if (!result)
       throw new HttpError(404, 'Not Found', 'getAll method not possible');
     return result;
   }
 
   async getById(id: string): Promise<User> {
-    const data = await UserModel.findById(id).exec();
-    if (!data)
+    console.log(id);
+    const data = await UserModel.findById(id).populate('probada').exec();
+    console.log(data);
+    if (!data) {
       throw new HttpError(404, 'Not Found', 'User not found in file system', {
         cause: 'Trying findById',
       });
+    }
+
     return data;
   }
 
@@ -45,7 +49,7 @@ export class UsersMongoRepo implements UserRepository<User> {
     value: any;
   }): Promise<User[]> {
     const result = await UserModel.find({ [key]: value })
-      .populate('probadas', {
+      .populate('probada', {
         beer: 0,
       })
       .exec();
@@ -78,15 +82,22 @@ export class UsersMongoRepo implements UserRepository<User> {
       });
   }
 
-  async addBeer(beerId: Beer['id'], userId: User['id']): Promise<User> {
+  async addBeer(beer: Beer, userId: User['id']): Promise<User> {
+    console.log('dentro de añadir', { beer });
+    console.log({ userId });
+
     const updatedUser = await UserModel.findByIdAndUpdate(
       userId,
-      { $push: { probada: beerId } },
+      { $push: { probada: beer } },
       { new: true }
     ).exec();
-
+    console.log({ updatedUser });
     if (!updatedUser) {
-      throw new HttpError(404, 'Not Found', 'Update not possible');
+      throw new HttpError(
+        404,
+        'Not Found in mongo repo',
+        'Update not possible'
+      );
     }
 
     return updatedUser;

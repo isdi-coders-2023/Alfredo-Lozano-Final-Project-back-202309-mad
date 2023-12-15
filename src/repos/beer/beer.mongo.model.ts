@@ -34,7 +34,7 @@ export const beerSchema = new Schema<Beer>({
   },
 });
 
-export const BeerModel = model('Beers', beerSchema, 'beers');
+export const BeerModel = model('Beer', beerSchema, 'beers');
 
 beerSchema.set('toJSON', {
   transform(_document, returnedObject) {
