@@ -7,7 +7,6 @@ import { User } from '../../entities/user.model.js';
 import { Auth } from '../../services/auth.js';
 import { HttpError } from '../../types/http.error.js';
 
-import { Beer } from '../../entities/beer.model.js';
 import { BeerMongoRepo } from '../../repos/beer/beer.mongo.repo.js';
 
 const debug = createDebug('W9Final:users:controller');
@@ -57,7 +56,7 @@ export class UsersController extends Controller<User> {
       }
 
       console.log('preprobada');
-      if (user.probada.includes(beer as unknown as Beer)) {
+      if (user.probada.includes(beer)) {
         throw new HttpError(
           404,
           'Beer Found',
