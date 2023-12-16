@@ -1,4 +1,7 @@
-export interface UserRepository<X extends { id: unknown }> {
+export interface UserRepository<
+  X extends { id: unknown },
+  Y extends { id: unknown }
+> {
   getAll(): Promise<X[]>;
   getById(_id: X['id']): Promise<X>;
   // eslint-disable-next-line no-unused-vars
@@ -7,7 +10,7 @@ export interface UserRepository<X extends { id: unknown }> {
   update(_id: X['id'], _updatedItem: Partial<X>): Promise<X>;
   delete(_id: X['id']): Promise<void>;
 
-  addBeer(_BeerId: X['id'], _userId: X['id']): Promise<X>;
+  addBeer(_beer: Y, _userId: X['id']): Promise<X>;
   // AddPub(_PubId: X['id'], _userId: X['id']): Promise<X>;
   removeBeer(_id: X['id'], _beerIdToRemove: X['id']): Promise<X>;
   // RemovePub(_id: X['id'], _pubIdToRemove: X['id']): Promise<X>;

@@ -66,6 +66,8 @@ export class PubsMongoRepo implements PubsRepository<Pubs> {
   }
 
   async addBeer(beerId: Beer['id'], pubId: Pubs['id']): Promise<Pubs> {
+    console.log(beerId);
+    console.log(pubId);
     const updatedPub = await PubsModel.findByIdAndUpdate(
       pubId,
       { $push: { beers: beerId } },
