@@ -1,3 +1,4 @@
+import { Beer } from '../../entities/beer.model.js';
 import { User, UserLogin } from '../../entities/user.model.js';
 import { Auth } from '../../services/auth.js';
 import { HttpError } from '../../types/http.error.js';
@@ -199,20 +200,20 @@ describe('Given UserMongoRepo class', () => {
     });
 
     test('should throw a 404 error if the user is not found in the database', async () => {
-      const beerId = 'beerId';
+      const beerId = {} as unknown as Beer;
       const userId = 'userId';
       await expect(repo.addBeer(beerId, userId)).rejects.toThrow(HttpError);
     });
 
     test('should throw a HttpError with status 404 when the user does not exist', async () => {
-      const beerIdToRemove = 'beerId';
+      const beerIdToRemove = {} as unknown as Beer;
       const userId = 'userId';
-      await expect(repo.removeBeer(beerIdToRemove, userId)).rejects.toThrow(
+      await expect(repo.removeBeer(userId, beerIdToRemove)).rejects.toThrow(
         HttpError
       );
     });
     test('should throw a HttpError with status 404 when the update fails', async () => {
-      const beerIdToRemove = 'beerId';
+      const beerIdToRemove = {} as unknown as Beer;
       const userId = 'userId';
       const user = {
         id: userId,
@@ -229,7 +230,7 @@ describe('Given UserMongoRepo class', () => {
         exec: jest.fn().mockResolvedValue(null),
       });
 
-      await expect(repo.removeBeer(beerIdToRemove, userId)).rejects.toThrow(
+      await expect(repo.removeBeer(userId, beerIdToRemove)).rejects.toThrow(
         HttpError
       );
     });
@@ -241,7 +242,7 @@ describe('Given UserMongoRepo class', () => {
       await expect(repo.login(loginUser)).rejects.toThrow(HttpError);
     });
     test('should not update the user object if the beer ID is not in the list', async () => {
-      const beerIdToRemove = 'beerId';
+      const beerIdToRemove = {} as unknown as Beer;
       const userId = 'userId';
       const user = {
         id: userId,
@@ -255,13 +256,13 @@ describe('Given UserMongoRepo class', () => {
         .fn()
         .mockReturnValue({ exec: jest.fn().mockResolvedValue(user) });
 
-      const result = await repo.removeBeer(beerIdToRemove, userId);
+      const result = await repo.removeBeer(userId, beerIdToRemove);
       expect(UserModel.findById).toHaveBeenCalledWith(userId);
       expect(UserModel.findByIdAndUpdate).not.toHaveBeenCalled();
       expect(result).toEqual(user);
     });
     test('should not update the user object if the beer ID is not in the list', async () => {
-      const beerIdToadd = 'beerId';
+      const beerIdToadd = {} as unknown as Beer;
       const userId = 'userId';
       const user = {
         id: userId,

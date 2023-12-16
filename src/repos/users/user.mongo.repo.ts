@@ -83,15 +83,12 @@ export class UsersMongoRepo implements UserRepository<User, Beer> {
   }
 
   async addBeer(beer: Beer, userId: User['id']): Promise<User> {
-    console.log('dentro de añadir', { beer });
-    console.log({ userId });
-
     const updatedUser = await UserModel.findByIdAndUpdate(
       userId,
       { $push: { probada: beer } },
       { new: true }
     ).exec();
-    console.log({ updatedUser });
+
     if (!updatedUser) {
       throw new HttpError(
         404,
@@ -103,25 +100,29 @@ export class UsersMongoRepo implements UserRepository<User, Beer> {
     return updatedUser;
   }
 
-  async removeBeer(
-    beerIdToRemove: Beer['id'],
-    userId: User['id']
-  ): Promise<User> {
+  async removeBeer(userId: User['id'], beer: Beer): Promise<User> {
     // eslint-disable-next-line no-useless-catch
     try {
-      const user = await UserModel.findById(userId).exec();
+      const user = await await UserModel.findById(userId)
+        .populate('probada')
+        .exec();
+      const beer = await this.beerRepo.getById(req.params.id);
 
       if (!user) {
         throw new HttpError(404, 'Not Found', 'User not found');
       }
 
-      if (!user.probada.includes(beerIdToRemove as unknown as Beer)) {
+      if (!beer) {
+        throw new HttpError(404, 'Not Found', 'Beer not found');
+      }
+
+      if (!user.probada.includes(beer as unknown as Beer)) {
         return user;
       }
 
       const updatedUser = await UserModel.findByIdAndUpdate(
         userId,
-        { $pull: { probada: beerIdToRemove } },
+        { $pull: { probada: beer } },
         { new: true }
       ).exec();
 

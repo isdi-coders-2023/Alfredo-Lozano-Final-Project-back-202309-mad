@@ -44,9 +44,9 @@ export class UsersController extends Controller<User> {
   async addBeer(req: Request, res: Response, next: NextFunction) {
     try {
       const user = await this.repo.getById(req.body.id);
-      console.log('usuario', user);
+
       const beer = await this.beerRepo.getById(req.params.id);
-      console.log('cerveza', beer);
+
       if (!user) {
         throw new HttpError(404, 'Not Found', 'User not found');
       }
@@ -55,7 +55,6 @@ export class UsersController extends Controller<User> {
         throw new HttpError(404, 'Not Found', 'Beer not found');
       }
 
-      console.log('preprobada');
       if (user.probada.includes(beer)) {
         throw new HttpError(
           404,
@@ -64,7 +63,6 @@ export class UsersController extends Controller<User> {
         );
       }
 
-      console.log('preupdate');
       const updatedUser = await this.repo.addBeer(await beer, user.id);
       if (!updatedUser) {
         throw new HttpError(404, 'Not Found', 'Update not possible');
@@ -78,7 +76,26 @@ export class UsersController extends Controller<User> {
 
   async removeBeer(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await this.repo.removeBeer(req.params.id, req.body.userId);
+      const user = await this.repo.getById(req.body.id);
+      const beer = await this.beerRepo.getById(req.params.id);
+
+      if (!user) {
+        throw new HttpError(404, 'Not Found', 'User not found');
+      }
+
+      if (!beer) {
+        throw new HttpError(404, 'Not Found', 'Beer not found');
+      }
+
+      if (!user.probada.includes(beer)) {
+        throw new HttpError(
+          404,
+          'Beer Found',
+          'Update not possible, Beer already erase'
+        );
+      }
+
+      const result = await this.repo.removeBeer(user.id, await beer);
       res.json(result);
     } catch (error) {
       next(error);
