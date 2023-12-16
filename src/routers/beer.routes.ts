@@ -20,9 +20,6 @@ beersRouter.post(
   fileInterceptor.singleFileStore('beerImg').bind(fileInterceptor),
   controller.createBeer.bind(controller)
 );
-<<<<<<< HEAD
-beersRouter.get('/', controller.getAll.bind(controller));
-=======
 beersRouter.get(
   '/',
   fileInterceptor.singleFileStore('beerImg').bind(fileInterceptor),
@@ -33,4 +30,3 @@ beersRouter.get(
   fileInterceptor.singleFileStore('beerImg').bind(fileInterceptor),
   controller.getById.bind(controller)
 );
->>>>>>> ef75a71d6122f24ea18af1b5231767a43350af0d
