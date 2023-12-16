@@ -29,9 +29,7 @@ export class UsersMongoRepo implements UserRepository<User, Beer> {
   }
 
   async getById(id: string): Promise<User> {
-    console.log(id);
     const data = await UserModel.findById(id).populate('probada').exec();
-    console.log(data);
     if (!data) {
       throw new HttpError(404, 'Not Found', 'User not found in file system', {
         cause: 'Trying findById',
@@ -101,38 +99,16 @@ export class UsersMongoRepo implements UserRepository<User, Beer> {
   }
 
   async removeBeer(userId: User['id'], beer: Beer): Promise<User> {
-    // eslint-disable-next-line no-useless-catch
-    try {
-      const user = await await UserModel.findById(userId)
-        .populate('probada')
-        .exec();
-      const beer = await this.beerRepo.getById(req.params.id);
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      userId,
+      { $pull: { probada: beer } },
+      { new: true }
+    ).exec();
 
-      if (!user) {
-        throw new HttpError(404, 'Not Found', 'User not found');
-      }
-
-      if (!beer) {
-        throw new HttpError(404, 'Not Found', 'Beer not found');
-      }
-
-      if (!user.probada.includes(beer as unknown as Beer)) {
-        return user;
-      }
-
-      const updatedUser = await UserModel.findByIdAndUpdate(
-        userId,
-        { $pull: { probada: beer } },
-        { new: true }
-      ).exec();
-
-      if (!updatedUser) {
-        throw new HttpError(404, 'Not Found', 'Update not possible');
-      }
-
-      return updatedUser;
-    } catch (error) {
-      throw error;
+    if (!updatedUser) {
+      throw new HttpError(404, 'Not Found', 'Update not possible');
     }
+
+    return updatedUser;
   }
 }

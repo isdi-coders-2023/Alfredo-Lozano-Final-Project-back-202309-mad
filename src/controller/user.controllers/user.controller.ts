@@ -44,9 +44,7 @@ export class UsersController extends Controller<User> {
   async addBeer(req: Request, res: Response, next: NextFunction) {
     try {
       const user = await this.repo.getById(req.body.id);
-
       const beer = await this.beerRepo.getById(req.params.id);
-
       if (!user) {
         throw new HttpError(404, 'Not Found', 'User not found');
       }
