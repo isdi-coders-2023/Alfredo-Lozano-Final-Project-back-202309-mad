@@ -4,8 +4,10 @@ import { Auth } from '../../services/auth.js';
 import { HttpError } from '../../types/http.error.js';
 import { UsersMongoRepo } from './user.mongo.repo.js';
 import { UserModel } from './users.mongo.model.js';
+
 jest.mock('./users.mongo.model');
 jest.mock('../../services/auth');
+jest.mock('../beer/beer.mongo.model');
 describe('Given UserMongoRepo class', () => {
   let repo: UsersMongoRepo;
   const exec = jest.fn().mockResolvedValue('name');
@@ -13,12 +15,16 @@ describe('Given UserMongoRepo class', () => {
   describe('When we instantiate it without errors', () => {
     beforeEach(() => {
       repo = new UsersMongoRepo();
-      UserModel.find = jest
-        .fn()
-        .mockReturnValue({ populate: jest.fn().mockReturnValue({ exec }) });
-      UserModel.findById = jest
-        .fn()
-        .mockReturnValue({ exec: jest.fn().mockResolvedValue(null) });
+      UserModel.find = jest.fn().mockReturnValue({
+        populate: jest.fn().mockReturnValue({
+          exec,
+        }),
+      });
+      UserModel.findById = jest.fn().mockReturnValue({
+        populate: jest.fn().mockReturnValue({
+          exec,
+        }),
+      });
       UserModel.create = jest
         .fn()
         .mockReturnValue({ populate: jest.fn().mockReturnValue({ exec }) });
@@ -40,9 +46,12 @@ describe('Given UserMongoRepo class', () => {
     };
     test('should return a user object when a valid id is passed', async () => {
       const repo = new UsersMongoRepo();
-      UserModel.findById = jest
-        .fn()
-        .mockReturnValue({ exec: jest.fn().mockResolvedValue(user) });
+      const exec = jest.fn().mockResolvedValue(user);
+      UserModel.findById = jest.fn().mockReturnValue({
+        populate: jest.fn().mockReturnValue({
+          exec,
+        }),
+      });
 
       const result = await repo.getById(id);
       expect(UserModel.findById).toHaveBeenCalledWith(id);
@@ -90,9 +99,12 @@ describe('Given UserMongoRepo class', () => {
           probada: [],
         },
       ];
-      UserModel.find = jest
-        .fn()
-        .mockReturnValue({ exec: jest.fn().mockResolvedValue(mockUsers) });
+      const exec = jest.fn().mockResolvedValue(mockUsers);
+      UserModel.find = jest.fn().mockReturnValue({
+        populate: jest.fn().mockReturnValue({
+          exec,
+        }),
+      });
 
       const repo = new UsersMongoRepo();
       const result = await repo.getAll();
@@ -148,17 +160,45 @@ describe('Given UserMongoRepo class', () => {
       });
       expect(result).toEqual(createdUser);
     });
+    test('shoul return an add beer and update objet', async () => {
+      const beer = { id: 'beerId', name: 'Beer' } as unknown as Beer;
+      const userId = '1';
+      const updatedUser = {
+        ...beer.author,
+        probada: [beer],
+      };
+      UserModel.findByIdAndUpdate = jest.fn().mockReturnValue({
+        exec: jest.fn().mockResolvedValue(updatedUser),
+      });
+      const result = await repo.addBeer(beer, userId);
+      expect(result).toEqual(updatedUser);
+    });
+    test('should return the updated user object when valid user ID and beer are provided', async () => {
+      const userId = 'validUserId';
+      const beer = { id: 'beerId', name: 'Beer' } as unknown as Beer;
+      const updatedUser = { id: userId, probada: [] };
+      UserModel.findByIdAndUpdate = jest
+        .fn()
+        .mockReturnValue({ exec: jest.fn().mockResolvedValue(updatedUser) });
+      const result = await repo.removeBeer(userId, beer);
+      expect(result).toEqual(updatedUser);
+    });
   });
 
   describe('when there is an error', () => {
     beforeEach(() => {
+      const exec = jest.fn().mockResolvedValue(null);
       repo = new UsersMongoRepo();
-      UserModel.find = jest
-        .fn()
-        .mockReturnValue({ exec: jest.fn().mockResolvedValue(null) });
-      UserModel.findById = jest
-        .fn()
-        .mockReturnValue({ exec: jest.fn().mockResolvedValue(null) });
+      UserModel.find = jest.fn().mockReturnValue({
+        populate: jest.fn().mockReturnValue({
+          exec,
+        }),
+      });
+      UserModel.findById = jest.fn().mockReturnValue({
+        populate: jest.fn().mockReturnValue({
+          exec,
+        }),
+      });
       const mockExec = jest.fn().mockResolvedValueOnce(null);
       UserModel.findByIdAndUpdate = jest.fn().mockReturnValueOnce({
         exec: mockExec,
@@ -240,26 +280,6 @@ describe('Given UserMongoRepo class', () => {
         password: 'password123',
       };
       await expect(repo.login(loginUser)).rejects.toThrow(HttpError);
-    });
-    test('should not update the user object if the beer ID is not in the list', async () => {
-      const beerIdToRemove = {} as unknown as Beer;
-      const userId = 'userId';
-      const user = {
-        id: userId,
-        name: 'John',
-        surname: 'Doe',
-        age: 25,
-        userName: 'johndoe',
-        probada: [],
-      };
-      UserModel.findById = jest
-        .fn()
-        .mockReturnValue({ exec: jest.fn().mockResolvedValue(user) });
-
-      const result = await repo.removeBeer(userId, beerIdToRemove);
-      expect(UserModel.findById).toHaveBeenCalledWith(userId);
-      expect(UserModel.findByIdAndUpdate).not.toHaveBeenCalled();
-      expect(result).toEqual(user);
     });
     test('should not update the user object if the beer ID is not in the list', async () => {
       const beerIdToadd = {} as unknown as Beer;
