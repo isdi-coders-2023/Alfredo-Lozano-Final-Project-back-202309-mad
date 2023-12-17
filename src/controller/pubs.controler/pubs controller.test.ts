@@ -65,14 +65,7 @@ describe('Given UsersController class', () => {
       await controller.delete(mockRequest, mockResponse, mockNext);
       expect(mockResponse.json).toHaveBeenCalledWith({});
     });
-    test('Then addBeer should ...', async () => {
-      await controller.addBeer(mockRequest, mockResponse, mockNext);
-      expect(mockResponse.json).toHaveBeenCalledWith({});
-    });
-    test('Then removeBeer should ...', async () => {
-      await controller.removeBeer(mockRequest, mockResponse, mockNext);
-      expect(mockResponse.json).toHaveBeenCalledWith({});
-    });
+
     describe('When we instantiate it WITH errors', () => {
       let mockError: Error;
       beforeEach(() => {

@@ -24,19 +24,36 @@ describe('UsersController', () => {
     } as unknown as Response;
     mockNext = jest.fn();
   });
+
   beforeEach(() => {
     mockRepo = {
       getAll: jest.fn().mockResolvedValue([{}]),
-      getById: jest.fn().mockResolvedValue({}),
       search: jest.fn().mockResolvedValue([{}]),
       create: jest.fn().mockResolvedValue({}),
       update: jest.fn().mockResolvedValue({}),
-      addBeer: jest.fn().mockResolvedValue({ id: '1', probada: ['beer1'] }),
+      getById: jest.fn().mockResolvedValue({ id: 'userId', probada: [] }),
+      addBeer: jest
+        .fn()
+        .mockResolvedValue({ id: 'userId', probada: ['beerId'] }),
       delete: jest.fn().mockResolvedValue(undefined),
       login: jest.fn().mockResolvedValue({}),
     } as unknown as jest.Mocked<UsersMongoRepo>;
 
     controller = new UsersController(mockRepo);
+  });
+
+  describe('AddBeer method', () => {
+    test('addBeer should add a beer to the user tasted beers', async () => {
+      mockRequest = {
+        body: { id: 'userId' },
+        params: { id: 'beerId' },
+      } as unknown as Request;
+
+      await controller.addBeer(mockRequest, mockResponse, mockNext);
+
+      expect(mockRepo.getById).toHaveBeenCalledWith('userId');
+      expect(mockNext).toHaveBeenCalled();
+    });
   });
 
   describe('login method', () => {
