@@ -1,4 +1,4 @@
-import { PubsMongoRepo } from '../../repos/pubs/pubs.mongo.repo';
+import { PubsMongoRepo } from '../../repos/pubs/pubs.mongo.repo.js';
 import { PubsController } from './pubs.controller';
 import { Request, Response } from 'express';
 
