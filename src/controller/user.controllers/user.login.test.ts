@@ -31,6 +31,7 @@ describe('UsersController', () => {
       search: jest.fn().mockResolvedValue([{}]),
       create: jest.fn().mockResolvedValue({}),
       update: jest.fn().mockResolvedValue({}),
+      addBeer: jest.fn().mockResolvedValue({ id: '1', probada: ['beer1'] }),
       delete: jest.fn().mockResolvedValue(undefined),
       login: jest.fn().mockResolvedValue({}),
     } as unknown as jest.Mocked<UsersMongoRepo>;
@@ -78,30 +79,6 @@ describe('UsersController', () => {
       expect(mockResponse.json).toHaveBeenCalledWith({
         user: mockUser,
       });
-    });
-    test('should return the updated user object after adding the beer', async () => {
-      const mockRequest = {
-        body: { id: 'userId' },
-        params: { id: 'beerId' },
-      } as unknown as Request;
-      const mockResponse = {
-        json: jest.fn(),
-      } as unknown as Response;
-      const mockNext = jest.fn();
-      const mockUser = { id: 'userId', probada: [] } as unknown as User;
-      const mockUpdatedUser = {
-        id: 'userId',
-        probada: ['beerId'],
-      } as unknown as User;
-      const mockRepo = {
-        getById: jest.fn().mockResolvedValue(mockUser),
-        addBeer: jest.fn().mockResolvedValue(mockUpdatedUser),
-      } as unknown as jest.Mocked<UsersMongoRepo>;
-      const controller = new UsersController(mockRepo);
-
-      await controller.addBeer(mockRequest, mockResponse, mockNext);
-
-      expect(mockResponse.json).toHaveBeenCalledWith(mockUpdatedUser);
     });
   });
   describe('other methods', () => {

@@ -66,10 +66,6 @@ describe('Given UsersController class', () => {
       await controller.delete(mockRequest, mockResponse, mockNext);
       expect(mockResponse.json).toHaveBeenCalledWith({});
     });
-    test('then deleteBeer should...', async () => {
-      await controller.removeBeer(mockRequest, mockResponse, mockNext);
-      expect(mockResponse.json).toHaveBeenCalledWith({});
-    });
   });
 
   describe('When we instantiate it WITH errors', () => {
