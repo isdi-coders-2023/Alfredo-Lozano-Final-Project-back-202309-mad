@@ -75,8 +75,8 @@ describe('Given BeerController class', () => {
       expect(mockUserRepo.getById).toHaveBeenCalledWith('validUserID');
       expect(mockBeerRepo.getById).toHaveBeenCalledWith('validBeerID');
       expect(mockUserRepo.removeBeer).toHaveBeenCalledWith(
-        'validUserID',
-        mockBeer
+        mockBeer,
+        'validUserID'
       );
       expect(mockResponse.json).toHaveBeenCalledWith(mockUpdatedUser);
     });

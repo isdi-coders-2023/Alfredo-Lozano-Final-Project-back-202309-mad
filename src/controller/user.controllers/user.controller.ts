@@ -77,7 +77,7 @@ export class UsersController extends Controller<User> {
     try {
       const user = await this.repo.getById(req.body.id);
       const beer = await this.beerRepo.getById(req.params.id);
-      console.log('conseguit la beer', beer);
+
       if (!user) {
         throw new HttpError(404, 'Not Found', 'User not found');
       }
@@ -95,7 +95,7 @@ export class UsersController extends Controller<User> {
       }
 
       const result = await this.repo.removeBeer(await beer, user.id);
-      console.log('ver si lo ha conseguido', result);
+
       res.json(result);
     } catch (error) {
       next(error);
