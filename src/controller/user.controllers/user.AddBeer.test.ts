@@ -5,6 +5,19 @@ import { UsersController } from './user.controller';
 import { HttpError } from '../../types/http.error';
 import { describe } from 'node:test';
 
+const setupMockRequestResponse = (
+  body: Record<string, any> = {},
+  params: Record<string, any> = {}
+): [Request, Response, NextFunction] => {
+  const mockRequest: Request = { body, params } as unknown as Request;
+  const mockResponse: Response = {
+    status: jest.fn().mockReturnThis(),
+    json: jest.fn(),
+  } as unknown as Response;
+  const mockNext: NextFunction = jest.fn();
+  return [mockRequest, mockResponse, mockNext];
+};
+
 describe('Given BeerController class', () => {
   describe('When we instantiate it without errors', () => {
     test('should successfully add a beer to a users tasted beers list', async () => {
@@ -84,19 +97,12 @@ describe('Given BeerController class', () => {
   describe('When we instantiate it with errors', () => {
     test('should throw an error with status 404 if user is not found', async () => {
       // Arrange
-      const mockRequest: Request = {
-        body: { id: 'invalidUserId' },
-      } as unknown as Request;
-      const mockResponse: Response = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as unknown as Response;
-      const mockNext: NextFunction = jest.fn();
+      const [mockRequest, mockResponse, mockNext] = setupMockRequestResponse({
+        id: 'invalidUserId',
+      });
       const mockError = new HttpError(404, 'Not Found', 'User not found');
       const mockRepo = {
-        getById: jest
-          .fn()
-          .mockRejectedValue(new HttpError(404, 'Not Found', 'User not found')),
+        getById: jest.fn().mockRejectedValue(mockError),
       } as unknown as UsersMongoRepo;
       const controller = new UsersController(mockRepo);
 
@@ -107,22 +113,16 @@ describe('Given BeerController class', () => {
       expect(mockRepo.getById).toHaveBeenCalledWith('invalidUserId');
       expect(mockNext).toHaveBeenCalledWith(expect.objectContaining(mockError));
     });
+
     test('should throw an error with status 404 if user is not found', async () => {
       // Arrange
-      const mockRequest: Request = {
-        body: { id: 'InvalidUserID' },
-        params: { id: 'InvalidBeerID' },
-      } as unknown as Request;
-      const mockResponse: Response = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      } as unknown as Response;
-      const mockNext: NextFunction = jest.fn();
+      const [mockRequest, mockResponse, mockNext] = setupMockRequestResponse(
+        { id: 'InvalidUserID' },
+        { id: 'InvalidBeerID' }
+      );
       const mockError = new HttpError(404, 'Not Found', 'User not found');
       const mockRepo = {
-        getById: jest
-          .fn()
-          .mockRejectedValue(new HttpError(404, 'Not Found', 'User not found')),
+        getById: jest.fn().mockRejectedValue(mockError),
       } as unknown as UsersMongoRepo;
       const controller = new UsersController(mockRepo);
 
