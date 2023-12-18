@@ -86,7 +86,7 @@ export class UsersController extends Controller<User> {
         throw new HttpError(404, 'Not Found', 'Beer not found');
       }
 
-      if (user.probada.includes(beer)!) {
+      if (user.probada.includes(beer)) {
         throw new HttpError(
           404,
           'Beer Found',
@@ -94,7 +94,7 @@ export class UsersController extends Controller<User> {
         );
       }
 
-      const result = await this.repo.removeBeer(user.id, await beer);
+      const result = await this.repo.removeBeer(await beer, user.id);
       console.log('ver si lo ha conseguido', result);
       res.json(result);
     } catch (error) {

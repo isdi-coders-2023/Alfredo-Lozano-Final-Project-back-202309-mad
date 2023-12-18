@@ -15,7 +15,9 @@ export class UsersMongoRepo implements UserRepository<User, Beer> {
   }
 
   async login(loginUser: UserLogin): Promise<User> {
-    const result = await UserModel.findOne({ email: loginUser.email }).exec();
+    const result = await UserModel.findOne({ email: loginUser.email })
+      .populate('probada')
+      .exec();
     if (!result || !(await Auth.compare(loginUser.password, result.password)))
       throw new HttpError(401, 'Unauthorized');
     return result;
@@ -29,6 +31,7 @@ export class UsersMongoRepo implements UserRepository<User, Beer> {
   }
 
   async getById(id: string): Promise<User> {
+    console.log(id);
     const data = await UserModel.findById(id).populate('probada').exec();
     if (!data) {
       throw new HttpError(404, 'Not Found', 'User not found in file system', {
@@ -98,13 +101,13 @@ export class UsersMongoRepo implements UserRepository<User, Beer> {
     return updatedUser;
   }
 
-  async removeBeer(userId: User['id'], beer: Beer): Promise<User> {
+  async removeBeer(beer: Beer, userId: User['id']): Promise<User> {
     const updatedUser = await UserModel.findByIdAndUpdate(
       userId,
       { $pull: { probada: beer.id } },
       { new: true }
     ).exec();
-    console.log('ver si ha pasado', updatedUser);
+
     if (!updatedUser) {
       throw new HttpError(404, 'Not Found', 'Update not possible');
     }
