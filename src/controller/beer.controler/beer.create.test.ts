@@ -4,7 +4,7 @@ import { HttpError } from '../../types/http.error';
 import { BeersControler } from './beer.controller';
 import { Request, Response, NextFunction } from 'express';
 
-describe('Given FilmsController class', () => {
+describe('Given BeerController class', () => {
   describe('When we instantiate it without errors', () => {
     test('should create a beer with valid input data and image file', async () => {
       const mockRequest: Request = {

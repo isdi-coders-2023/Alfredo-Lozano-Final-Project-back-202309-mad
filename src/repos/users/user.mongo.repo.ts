@@ -99,8 +99,6 @@ export class UsersMongoRepo implements UserRepository<User, Beer> {
   }
 
   async removeBeer(userId: User['id'], beer: Beer): Promise<User> {
-    console.log('conseguir el  id en el mongo', userId);
-    console.log('conseguir beer en el mongo', beer);
     const updatedUser = await UserModel.findByIdAndUpdate(
       userId,
       { $pull: { probada: beer.id } },
