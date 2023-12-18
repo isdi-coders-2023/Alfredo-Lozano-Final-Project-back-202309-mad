@@ -30,3 +30,9 @@ beersRouter.get(
   fileInterceptor.singleFileStore('beerImg').bind(fileInterceptor),
   controller.getById.bind(controller)
 );
+
+beersRouter.patch(
+  '/delBeer/:id',
+  fileInterceptor.singleFileStore('beerImg').bind(fileInterceptor),
+  controller.delete.bind(controller)
+);

@@ -12,6 +12,6 @@ export interface UserRepository<
 
   addBeer(_beer: Y, _userId: X['id']): Promise<X>;
   // AddPub(_PubId: X['id'], _userId: X['id']): Promise<X>;
-  removeBeer(_id: X['id'], _beer: Y): Promise<X>;
+  removeBeer(_beer: Y, _userId: X['id']): Promise<X>;
   // RemovePub(_id: X['id'], _pubIdToRemove: X['id']): Promise<X>;
 }

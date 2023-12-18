@@ -45,7 +45,6 @@ export class UsersController extends Controller<User> {
     try {
       const user = await this.repo.getById(req.body.id);
       const beer = await this.beerRepo.getById(req.params.id);
-
       if (!user) {
         throw new HttpError(404, 'Not Found', 'User not found');
       }
@@ -54,8 +53,7 @@ export class UsersController extends Controller<User> {
         throw new HttpError(404, 'Not Found', 'Beer not found');
       }
 
-      // Assuming beer has an 'id' property for comparison
-      if (user.probada.some((tastedBeer) => tastedBeer.id === beer.id)) {
+      if (user.probada.includes(beer)) {
         throw new HttpError(
           409,
           'Conflict',
@@ -88,7 +86,7 @@ export class UsersController extends Controller<User> {
         throw new HttpError(404, 'Not Found', 'Beer not found');
       }
 
-      if (!user.probada.includes(beer)) {
+      if (user.probada.includes(beer)) {
         throw new HttpError(
           404,
           'Beer Found',
@@ -96,7 +94,8 @@ export class UsersController extends Controller<User> {
         );
       }
 
-      const result = await this.repo.removeBeer(user.id, await beer);
+      const result = await this.repo.removeBeer(await beer, user.id);
+
       res.json(result);
     } catch (error) {
       next(error);

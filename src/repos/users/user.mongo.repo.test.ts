@@ -116,10 +116,21 @@ describe('Given UserMongoRepo class', () => {
         email: 'test@example.com',
         password: 'password123',
       };
-      UserModel.findOne = jest
-        .fn()
-        .mockReturnValue({ exec: jest.fn().mockResolvedValue(user) });
+      const user = {
+        email: 'test@example.com',
+        password: 'hashedPassword',
+      } as unknown as User;
+
+      UserModel.findOne = jest.fn().mockReturnValueOnce({
+        populate: jest.fn().mockReturnValueOnce({
+          exec: jest.fn().mockResolvedValueOnce(user),
+        }),
+      });
+
+      Auth.compare = jest.fn().mockResolvedValueOnce(true);
+
       const result = await repo.login(loginUser);
+
       expect(UserModel.findOne).toHaveBeenCalledWith({
         email: loginUser.email,
       });
@@ -180,7 +191,7 @@ describe('Given UserMongoRepo class', () => {
       UserModel.findByIdAndUpdate = jest
         .fn()
         .mockReturnValue({ exec: jest.fn().mockResolvedValue(updatedUser) });
-      const result = await repo.removeBeer(userId, beer);
+      const result = await repo.removeBeer(beer, userId);
       expect(result).toEqual(updatedUser);
     });
   });
@@ -194,6 +205,7 @@ describe('Given UserMongoRepo class', () => {
           exec,
         }),
       });
+
       UserModel.findById = jest.fn().mockReturnValue({
         populate: jest.fn().mockReturnValue({
           exec,
@@ -206,9 +218,11 @@ describe('Given UserMongoRepo class', () => {
       UserModel.findByIdAndDelete = jest.fn().mockReturnValueOnce({
         exec: mockExec,
       });
-      UserModel.findOne = jest
-        .fn()
-        .mockReturnValue({ exec: jest.fn().mockResolvedValue(null) });
+      UserModel.findOne = jest.fn().mockReturnValue({
+        populate: jest.fn().mockReturnValue({
+          exec,
+        }),
+      });
     });
     test('should throw a HttpError with status code 404 when given an empty string as user id', async () => {
       await expect(repo.getById('')).rejects.toThrow(HttpError);
@@ -248,7 +262,7 @@ describe('Given UserMongoRepo class', () => {
     test('should throw a HttpError with status 404 when the user does not exist', async () => {
       const beerIdToRemove = {} as unknown as Beer;
       const userId = 'userId';
-      await expect(repo.removeBeer(userId, beerIdToRemove)).rejects.toThrow(
+      await expect(repo.removeBeer(beerIdToRemove, userId)).rejects.toThrow(
         HttpError
       );
     });
@@ -270,7 +284,7 @@ describe('Given UserMongoRepo class', () => {
         exec: jest.fn().mockResolvedValue(null),
       });
 
-      await expect(repo.removeBeer(userId, beerIdToRemove)).rejects.toThrow(
+      await expect(repo.removeBeer(beerIdToRemove, userId)).rejects.toThrow(
         HttpError
       );
     });
