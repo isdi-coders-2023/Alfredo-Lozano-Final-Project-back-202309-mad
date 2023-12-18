@@ -9,7 +9,6 @@ export default {
     'src/app.ts',
     'src/index.ts',
     'src/routers/user.routes.ts',
-    'src/routers/pub.routes.ts',
     'src/routers/beer.routes.ts',
   ],
 };

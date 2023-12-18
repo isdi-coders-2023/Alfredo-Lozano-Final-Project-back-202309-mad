@@ -26,4 +26,4 @@ usersRouter.patch(
   controller.removeBeer.bind(controller)
 );
 
-usersRouter.get('/:id', controller.getById.bind(controller));
+usersRouter.get('/:userId', controller.getById.bind(controller));

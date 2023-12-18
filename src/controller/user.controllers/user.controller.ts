@@ -78,17 +78,20 @@ export class UsersController extends Controller<User> {
   async removeBeer(req: Request, res: Response, next: NextFunction) {
     try {
       const user = await this.repo.getById(req.body.id);
+      console.log('conseguit el user', user);
       const beer = await this.beerRepo.getById(req.params.id);
-
+      console.log('conseguit la beer', beer);
       if (!user) {
         throw new HttpError(404, 'Not Found', 'User not found');
       }
 
+      console.log('user encontrado', user);
       if (!beer) {
         throw new HttpError(404, 'Not Found', 'Beer not found');
       }
 
-      if (!user.probada.includes(beer)) {
+      console.log('beer encontrada', beer);
+      if (user.probada.includes(beer)!) {
         throw new HttpError(
           404,
           'Beer Found',
@@ -96,7 +99,9 @@ export class UsersController extends Controller<User> {
         );
       }
 
+      console.log(user, beer);
       const result = await this.repo.removeBeer(user.id, await beer);
+      console.log('ver si lo ha conseguido', result);
       res.json(result);
     } catch (error) {
       next(error);
