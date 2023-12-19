@@ -9,21 +9,21 @@ const debug = createDebug('W9Final:media.files');
 
 export class MediaFiles {
   constructor() {
-    // Cloudinary.config({
-    //   cloud_name: 'dv0kwrjox',
-    //   api_key: '992654134475157',
-    //   api_secret: process.env.CLOUDINARY_SECRET,
-    //   secure: true,
-    // });
-    // debug('Instantiated');
-    // debug('Key:', process.env.CLOUDINARY_KEY);
-
     cloudinary.config({
+      cloud_name: 'dv0kwrjox',
+      api_key: '992654134475157',
+      api_secret: process.env.CLOUDINARY_SECRET,
       secure: true,
     });
     debug('Instantiated');
     debug('Key:', process.env.CLOUDINARY_KEY);
   }
+  //   Cloudinary.config({
+  //     secure: true,
+  //   });
+  //   debug('Instantiated');
+  //   debug('Key:', process.env.CLOUDINARY_KEY);
+  // }
 
   async uploadImage(imagePath: string) {
     try {

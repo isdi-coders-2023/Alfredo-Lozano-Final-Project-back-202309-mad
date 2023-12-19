@@ -21,7 +21,7 @@ export class BeersControler extends Controller<Beer> {
       const userID = req.params.id;
       const author = await this.userRepo.getById(userID);
       req.body.author = author;
-      if (!req.file?.path)
+      if (!req.file)
         throw new HttpError(406, 'Not Acceptable', 'Invalid multer file');
       const imgData = await this.cloudinaryService.uploadImage(req.file.path);
       req.body.beerImg = imgData;
