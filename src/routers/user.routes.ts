@@ -16,6 +16,12 @@ const interceptor = new Interceptor();
 usersRouter.post('/register', controller.create.bind(controller));
 usersRouter.post('/login', controller.login.bind(controller));
 usersRouter.patch(
+  '/login',
+  interceptor.authorization.bind(interceptor),
+  controller.login.bind(controller)
+);
+
+usersRouter.patch(
   '/addBeer/:id',
   interceptor.authorization.bind(interceptor),
   controller.addBeer.bind(controller)
