@@ -31,7 +31,7 @@ beersRouter.get(
   controller.getById.bind(controller)
 );
 
-beersRouter.patch(
+beersRouter.delete(
   '/delBeer/:id',
   fileInterceptor.singleFileStore('beerImg').bind(fileInterceptor),
   controller.delete.bind(controller)
